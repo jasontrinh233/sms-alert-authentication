@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <!-- FontAwesome -->
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+   <!-- Bootstap CSS -->
+   <link rel="stylesheet" href="./stylesheets/bootstrap.min.css">
+
+   <!-- CSS -->
+   <link rel="stylesheet" href="./stylesheets/style.css">
+
+   <title>Login</title>
+</head>
+<body>
+   <!-- Navbar -->
+   <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/login"><i class="fas fa-project-diagram"></i> NETWORK</a>
+      <div class="navbar-nav">
+         <a class="nav-item nav-link" href="/login">Login</a>
+         <a class="nav-item nav-link" href="/register">Register</a>
+      </div>
+   </nav>
+
+   <!-- Header -->
+   <div class="header">
+      <h1>Login</h1>
+   </div>
+
+   <!-- Form -->
+   <div class="container">
+      <form>
+         <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter email">
+            <small id="email-error" class="error"></small>
+         </div>
+         <div class="form-group">
+            <label for="exampleInputPassword1">Password:</label>
+            <input type="password" class="form-control" id="password" placeholder="Enter password">
+         </div>
+         <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+      </form>
+   </div>
+
+
+   <!-- Import jQuery -->
+   <script src="https://code.jquery.com/jquery-3.4.0.js" integrity="sha256-DYZMCC8HTC+QDr5QNaIcfR7VSPtcISykd+6eSmBW5qo=" crossorigin="anonymous"></script>
+
+   <!-- Import Bootstap JS -->
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+   <!-- Implement jQuery -->
+   <script>
+      $(document).ready(() => {
+         let tries = 0;
+
+         /*======================== Submit Button ======================*/
+         $('#submit').click( e => {
+            e.preventDefault();
+            const data = {
+               email: document.getElementById('email').value,
+               password: document.getElementById('password').value
+            };
+
+            // send request
+            $.ajax({
+               type: 'POST',
+               url: '/login',
+               data: data,
+               dataType: 'json',
+               success: response => {
+                  // redirect to login page
+                  window.location.href = '/index';
+               },
+               error: (jqXHR, textStatus, errorThrown) => {
+                  console.log(tries);
+                  if (jqXHR.status != 200 & tries < 4) {
+                     tries++;
+                     if (jqXHR.responseJSON != '') {
+                        $('#email-error').html(
+                           `<font color="red">Email or password incorrect</font>`
+                        );
+                     } else {
+                        $('#email-error').html('');
+                     }
+                  } else if (tries >= 4) {
+                     // send request
+                     $.ajax({
+                        type: 'POST',
+                        url: 'login/security-alert',
+                        data: data,
+                        success: response => {
+                           // DEBUG
+                           console.log(response);
+                           window.location.href = '/login';
+                        },
+                        error: (jqXHR, textStatus, errorThrown) => {
+                           // DEBUG
+                           console.log(jqXHR.responseJSON);
+                        }
+                     }); // END AJAX
+
+                  }
+               }
+            }); // END AJAX
+         }); // END SUBMIT FORM
+      });
+   </script>
+
+</body>
+</html>

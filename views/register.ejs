@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <!-- FontAwesome -->
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+   <!-- Bootstap CSS -->
+   <link rel="stylesheet" href="./stylesheets/bootstrap.min.css">
+
+   <!-- CSS -->
+   <link rel="stylesheet" href="./stylesheets/style.css">
+
+   <title>Register</title>
+</head>
+<body>
+   <!-- Navbar -->
+   <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/register"><i class="fas fa-project-diagram"></i> NETWORK</a>
+      <div class="navbar-nav">
+         <a class="nav-item nav-link" href="/login">Login</a>
+         <a class="nav-item nav-link" href="/register">Register</a>
+      </div>
+   </nav>
+   
+   <!-- Header -->
+   <div class="header">
+      <h1>Register</h1>
+   </div>
+
+   <!-- Form -->
+   <div class="container">
+      <form>
+         <!-- email -->
+         <div class="form-group">
+            <label for="email1">Email:</label>
+            <input type="text" class="form-control" id="email1" placeholder="Enter email">
+            <small id="email1-error"></small>
+         </div>
+
+         <!-- confirm email -->
+         <div class="form-group">
+            <label for="email2">Confirm email:</label>
+            <input type="text" class="form-control" id="email2" placeholder="Re-type email">
+            <small id="email2-error"></small>
+         </div>
+
+         <!-- password -->
+         <div class="form-group">
+            <label for="password1">Password:</label>
+            <input type="password" class="form-control" id="password1" placeholder="Enter password">
+            <small id="password1-error"></small>
+         </div>
+         
+         <!-- confirm password -->
+         <div class="form-group">
+            <label for="password2">Confirm password:</label>
+            <input type="password" class="form-control" id="password2" placeholder="Re-type password">
+            <small id="password2-error"></small>
+         </div>
+
+         <!-- phone -->
+         <div class="form-group">
+            <label for="phone">Phone number:</label>
+            <div class="input-group mb-3">
+               <input type="text" class="form-control" id="phone" placeholder="Enter phone number">
+               <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" id="verify-btn">Verify</button>
+               </div>
+            </div>
+            <small id="phone-error"></small>
+         </div>
+         
+         <!-- submit-btn -->
+         <button id="submit" type="submit" class="btn btn-primary">Submit</button>
+      </form>
+   </div>
+
+   <!-- Import jQuery -->
+   <script src="https://code.jquery.com/jquery-3.4.0.js" integrity="sha256-DYZMCC8HTC+QDr5QNaIcfR7VSPtcISykd+6eSmBW5qo=" crossorigin="anonymous"></script>
+
+   <!-- Import Bootstap JS -->
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+   <!-- Implement jQuery -->
+   <script>
+      $(document).ready( () => {
+
+         /*======================== Submit Button ======================*/
+         $('#submit').click( e => {
+            e.preventDefault();
+            const data = {
+               email1: document.getElementById('email1').value,
+               email2: document.getElementById('email2').value,
+               password1: document.getElementById('password1').value,
+               password2: document.getElementById('password2').value,
+               phone: document.getElementById('phone').value
+            };
+
+            // send request
+            $.ajax({
+               type: 'POST',
+               url: '/register/submit',
+               data: data,
+               dataType: 'json',
+               success: response => {
+                  // redirect to login page
+                  window.location.href = '/login';
+               },
+               error: (jqXHR, textStatus, errorThrown) => {
+                  if (jqXHR.status != 200) {
+                     console.log(jqXHR.responseJSON);
+                     // email1 error
+                     if (jqXHR.responseJSON.email1) {
+                        $('#email1-error').html(
+                           `<font color="red">${jqXHR.responseJSON.email1}</font>`
+                        );
+                     } else {
+                        $('#email1-error').html('');
+                     }
+
+                     // email2 error
+                     if (jqXHR.responseJSON.email2) {
+                        $('#email2-error').html(
+                           `<font color="red">${jqXHR.responseJSON.email2}</font>`
+                        );
+                     } else {
+                        $('#email2-error').html('');
+                     }
+
+                     // password1 error
+                     if (jqXHR.responseJSON.password1) {
+                        $('#password1-error').html(
+                           `<font color="red">${jqXHR.responseJSON.password1}</font>`
+                        );
+                     } else {
+                        $('#password1-error').html('');
+                     }
+
+                     // password2 error
+                     if (jqXHR.responseJSON.password2) {
+                        $('#password2-error').html(
+                           `<font color="red">${jqXHR.responseJSON.password2}</font>`
+                        );
+                     } else {
+                        $('#password2-error').html('');
+                     }
+                     
+                     // phone error
+                     if (jqXHR.responseJSON.phone) {
+                        $('#phone-error').html(
+                           `<font color="red">${jqXHR.responseJSON.phone}</font>`
+                        );
+                     } else {
+                        $('#phone-error').html('');
+                     }
+                  }
+               }
+            }); // END AJAX
+         }); // END SUBMIT FORM
+
+
+         /*======================== Verify Button ======================*/
+         $('#verify-btn').click( e => {
+            e.preventDefault();
+            const data = {
+               phone: document.getElementById('phone').value
+            }
+
+            // send request
+            $.ajax({
+               type: 'POST',
+               url: 'register/verify-phone',
+               data: data,
+               success: response => {
+                  if (response === 'verified') {
+                     $('#verify-btn').css('background-color', '#4bd941');
+                     $('#phone').prop('disabled', true);
+                  }
+               },
+               error: (jqXHR, textStatus, errorThrown) => {
+                  // DEBUG
+                  console.log(jqXHR.responseJSON);
+
+                  if (jqXHR.status != 200) {
+                     if (jqXHR.responseJSON === 'fail to verify') {
+                        $('#phone-error').html(
+                           `<font color="red">${jqXHR.responseJSON.phone}</font>`
+                        );
+                     } else {
+                        $('#phone-error').html('');
+                     }
+                  }
+               }
+            }); // END AJAX
+         }); // END VERIFY
+
+      });
+   </script>
+
+</body>
+</html>

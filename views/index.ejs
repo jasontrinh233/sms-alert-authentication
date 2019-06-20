@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <!-- FontAwesome -->
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+   <!-- Bootstap CSS -->
+   <link rel="stylesheet" href="./stylesheets/bootstrap.min.css">
+
+   <!-- CSS -->
+   <link rel="stylesheet" href="./stylesheets/style.css">
+
+   <title>Welcome to Network</title>
+</head>
+<body>
+   <!-- Navbar -->
+   <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#"><i class="far fa-user-circle"></i> <%- email -%></a>
+      <div class="navbar-nav">
+         <a class="nav-item nav-link" href="/logout">Logout</a>
+      </div>
+   </nav>
+
+   <!-- Header -->
+   <div class="header">
+      <h1><%- email -%></h1>
+   </div>
+
+   <div class="container">
+      <div class="input-group mb-3">
+         <input id="email" type="text" class="form-control" placeholder="Email: example@gmail.com" disabled>
+         <div class="input-group-append">
+            <button class="edit-btn btn btn-outline-secondary" type="button" id="1">Edit</button>
+         </div>
+      </div>
+
+      <div class="input-group mb-3">
+         <input id="phone" type="text" class="form-control" placeholder="Phone: 6196814935" disabled>
+         <div class="input-group-append">
+            <button class="edit-btn btn btn-outline-secondary" type="button" id="2">Edit</button>
+         </div>
+      </div>
+
+      <button class="btn btn-primary" type="submit">Submit</button>
+   </div>
+
+   <!-- Import jQuery -->
+   <script src="https://code.jquery.com/jquery-3.4.0.js" integrity="sha256-DYZMCC8HTC+QDr5QNaIcfR7VSPtcISykd+6eSmBW5qo=" crossorigin="anonymous"></script>
+   
+   <!-- Bootstap JS -->
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+   <script>
+      $(document).ready(function() {
+         
+         // Edit btn 
+         $('.edit-btn').click(function(e) {
+            e.preventDefault();
+            const id = $(this).attr('id');
+
+            switch(id) {
+               case '1':
+                  $('#email').removeAttr('disabled');
+                  break;
+               case '2':
+                  $('#phone').removeAttr('disabled');
+                  break;
+               default:
+                  // do nothing
+            }
+         }); // end Edit btn  
+
+      });
+   </script>
+
+</body>
+</html>
